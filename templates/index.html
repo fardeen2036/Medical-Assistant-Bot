@@ -1,25 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Medical AI Assistant</title>
+  <meta charset="UTF-8" />
+  <title>Medical AI Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+      color: #065f46;
+    }
+
+    .disclaimer {
+      background: #ecfeff;
+      border-left: 4px solid #06b6d4;
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      color: #155e75;
+      border-radius: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #059669;
+    }
+
+    .response {
+      margin-top: 1rem;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      color: #064e3b;
+    }
+
+    .loading {
+      margin-top: 1rem;
+      color: #0f766e;
+      font-style: italic;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <h2>Medical AI Assistant</h2>
-    <input id="msg" placeholder="Describe your symptoms" />
-    <button onclick="send()">Ask</button>
-    <pre id="reply"></pre>
+  <div class="card">
+    <h1>Medical AI Assistant</h1>
 
-    <script>
-        async function send() {
-            const msg = document.getElementById("msg").value;
-            const res = await fetch("/chat", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({message: msg})
-            });
-            const data = await res.json();
-            document.getElementById("reply").textContent = data.reply;
-        }
-    </script>
+    <div class="disclaimer">
+      ⚠️ <strong>Disclaimer:</strong> This assistant provides general health information and is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical concerns.
+    </div>
+
+    <div class="input-row">
+      <input id="msg" placeholder="Describe your symptoms…" />
+      <button onclick="send()">Ask</button>
+    </div>
+
+    <div id="loading" class="loading">Thinking…</div>
+    <div id="reply" class="response"></div>
+  </div>
+
+  <script>
+    async function send() {
+      const msg = document.getElementById("msg").value.trim();
+      if (!msg) return;
+
+      const replyBox = document.getElementById("reply");
+      const loading = document.getElementById("loading");
+
+      replyBox.textContent = "";
+      loading.style.display = "block";
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+
+        const data = await res.json();
+        replyBox.textContent = data.reply;
+      } catch (e) {
+        replyBox.textContent = "⚠️ Something went wrong. Please try again.";
+      } finally {
+        loading.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
