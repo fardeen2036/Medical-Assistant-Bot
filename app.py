@@ -17,7 +17,7 @@ redis_client = redis.from_url(redis_url, decode_responses=True) if redis_url els
 
 # Gemini
 try:
-    genai.configure(api_key=os.getenv("AIzaSyDawRY9FphmuP8BJwFeyonkYMls-SL9s7o"))  # Replace with your actual API key
+    genai.configure(api_key=os.getenv("AIzaSyByeQuIdgtY1tGx89raUFwW9znvnk21E8Q"))  # Replace with your actual API key
     model = genai.GenerativeModel("gemini-3-flash-preview")
 except Exception as e:
     print(f"Error configuring Gemini: {e}")
@@ -107,6 +107,7 @@ Respond in natural language like a smart healthcare assistant to help them under
 
 if __name__ == '__main__':
     app.run()
+
 
 
 
