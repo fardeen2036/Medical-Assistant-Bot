@@ -6,7 +6,7 @@ import google.generativeai as genai
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Load dataset
-drug_df = pd.read_csv(r'D:\OneDrive\Desktop\new\dataset\Drug prescription to disease\final.csv')
+drug_df = pd.read_csv("final.csv")
 all_diseases = drug_df['disease'].dropna().unique().tolist()
 all_diseases_lower = [d.lower() for d in all_diseases]
 
@@ -105,3 +105,4 @@ Respond in natural language like a smart healthcare assistant to help them under
 
 if __name__ == '__main__':
     app.run(debug=True)
+
