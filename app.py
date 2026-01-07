@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 import pandas as pd
 import redis
 import google.generativeai as genai
+import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -11,11 +12,12 @@ all_diseases = drug_df['disease'].dropna().unique().tolist()
 all_diseases_lower = [d.lower() for d in all_diseases]
 
 # Redis
-redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
+redis_url = os.getenv("redis-cli --tls -u redis://default:AXGgAAIncDI4Y2JlODY1OWFiMDU0N2EwOTdjYTFkNmMzMDYyZDYxN3AyMjkwODg@liberal-ferret-29088.upstash.io:6379")
+redis_client = redis.from_url(redis_url, decode_responses=True) if redis_url else None
 
 # Gemini
 try:
-    genai.configure(api_key="Gemini_key")  # Replace with your actual API key
+    genai.configure(api_key=os.getenv("AIzaSyAx68sbUNHs7pIKb1sJaBXt6jNI9AfhPSA"))  # Replace with your actual API key
     model = genai.GenerativeModel("gemini-1.5-pro-latest")
 except Exception as e:
     print(f"Error configuring Gemini: {e}")
@@ -104,5 +106,6 @@ Respond in natural language like a smart healthcare assistant to help them under
         return jsonify({"reply": "❌ Gemini model is not initialized. Please check the API key."}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
+
 
