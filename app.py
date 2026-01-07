@@ -12,13 +12,13 @@ all_diseases = drug_df['disease'].dropna().unique().tolist()
 all_diseases_lower = [d.lower() for d in all_diseases]
 
 # Redis
-redis_url = os.getenv("redis-cli --tls -u redis://default:AXGgAAIncDI4Y2JlODY1OWFiMDU0N2EwOTdjYTFkNmMzMDYyZDYxN3AyMjkwODg@liberal-ferret-29088.upstash.io:6379")
+redis_url = os.getenv("REDIS_URL")
 redis_client = redis.from_url(redis_url, decode_responses=True) if redis_url else None
 
 # Gemini
 try:
-    genai.configure(api_key=os.getenv("AIzaSyByeQuIdgtY1tGx89raUFwW9znvnk21E8Q"))  # Replace with your actual API key
-    model = genai.GenerativeModel("gemini-3-flash-preview")
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    model = genai.GenerativeModel("gemini-1.5-flash")
 except Exception as e:
     print(f"Error configuring Gemini: {e}")
     model = None
@@ -107,6 +107,7 @@ Respond in natural language like a smart healthcare assistant to help them under
 
 if __name__ == '__main__':
     app.run()
+
 
 
 
