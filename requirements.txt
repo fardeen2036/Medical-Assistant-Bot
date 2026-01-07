@@ -3,3 +3,4 @@ pandas
 redis
 google-generativeai
 gunicorn
+Force rebuild
