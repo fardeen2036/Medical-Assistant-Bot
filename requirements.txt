@@ -1,0 +1,5 @@
+flask
+pandas
+redis
+google-generativeai
+gunicorn
