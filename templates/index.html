@@ -2,131 +2,694 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Medical AI Assistant</title>
+  <title>Medical AI Assistant - Professional Health Insights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
+    * {
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      box-sizing: border-box;
     }
 
-    .card {
-      background: white;
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      min-height: 100vh;
       padding: 2rem;
-      width: 100%;
-      max-width: 600px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .logo svg {
+      width: 40px;
+      height: 40px;
+      stroke: white;
+      stroke-width: 2;
+      fill: none;
     }
 
     h1 {
-      margin-top: 0;
-      text-align: center;
-      color: #065f46;
+      color: #f8fafc;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.8s ease-out 0.2s both;
     }
 
     .disclaimer {
-      background: #ecfeff;
-      border-left: 4px solid #06b6d4;
-      padding: 0.75rem;
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-      color: #155e75;
-      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 1.25rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: start;
+      animation: fadeIn 0.8s ease-out 0.4s both;
     }
 
-    .input-row {
+    .disclaimer-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      color: #3b82f6;
+    }
+
+    .disclaimer-content {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .disclaimer-content strong {
+      color: #e0f2fe;
+      font-weight: 600;
+    }
+
+    .chat-container {
+      margin-bottom: 2rem;
+      min-height: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 1rem;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.8s ease-out 0.6s both;
+    }
+
+    .chat-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .message {
+      margin-bottom: 1.5rem;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    .message-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .message-content {
+      padding: 1.25rem;
+      border-radius: 12px;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .user-message .message-content {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .ai-message .message-content {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .input-container {
       display: flex;
-      gap: 0.5rem;
+      gap: 1rem;
+      animation: fadeIn 0.8s ease-out 0.8s both;
     }
 
     input {
       flex: 1;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #f8fafc;
       font-size: 1rem;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #64748b;
+    }
+
+    input:focus {
+      border-color: #10b981;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
     }
 
     button {
-      background: #10b981;
+      background: linear-gradient(135deg, #10b981, #059669);
       color: white;
       border: none;
-      border-radius: 8px;
-      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      padding: 1rem 2rem;
       cursor: pointer;
       font-size: 1rem;
-      transition: background 0.2s;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
     }
 
     button:hover {
-      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(16, 185, 129, 0.4);
     }
 
-    .response {
-      margin-top: 1rem;
-      white-space: pre-wrap;
-      line-height: 1.5;
-      color: #064e3b;
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .loading {
-      margin-top: 1rem;
-      color: #0f766e;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #10b981;
       font-style: italic;
-      display: none;
+      margin-top: 1rem;
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .loading-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: bounce 1.4s ease-in-out infinite;
+    }
+
+    .loading-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .quick-actions {
+      margin-bottom: 2rem;
+      animation: fadeIn 0.8s ease-out 0.5s both;
+    }
+
+    .quick-action-title {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .quick-action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .quick-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      text-align: center;
+      box-shadow: none;
+    }
+
+    .quick-btn:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .quick-btn svg {
+      width: 24px;
+      height: 24px;
+      color: #10b981;
+    }
+
+    .quick-btn span {
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+      animation: fadeIn 0.8s ease-out 1s both;
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(16, 185, 129, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .info-card-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .info-card-icon svg {
+      width: 20px;
+      height: 20px;
+      color: white;
+    }
+
+    .info-card h3 {
+      color: #f8fafc;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .info-card p {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+      40% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+
+      .input-container {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Medical AI Assistant</h1>
-
-    <div class="disclaimer">
-      ⚠️ <strong>Disclaimer:</strong> This assistant provides general health information and is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical concerns.
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M4.5 9.5V5.5C4.5 4.94772 4.94772 4.5 5.5 4.5H9.5C10.0523 4.5 10.5 4.94772 10.5 5.5V9.5C10.5 10.0523 10.0523 10.5 9.5 10.5H5.5C4.94772 10.5 4.5 10.0523 4.5 9.5Z" />
+          <path d="M13.5 9.5V5.5C13.5 4.94772 13.9477 4.5 14.5 4.5H18.5C19.0523 4.5 19.5 4.94772 19.5 5.5V9.5C19.5 10.0523 19.0523 10.5 18.5 10.5H14.5C13.9477 10.5 13.5 10.0523 13.5 9.5Z" />
+          <path d="M4.5 18.5V14.5C4.5 13.9477 4.94772 13.5 5.5 13.5H9.5C10.0523 13.5 10.5 13.9477 10.5 14.5V18.5C10.5 19.0523 10.0523 19.5 9.5 19.5H5.5C4.94772 19.5 4.5 19.0523 4.5 18.5Z" />
+          <path d="M13.5 18.5V14.5C13.5 13.9477 13.9477 13.5 14.5 13.5H18.5C19.0523 13.5 19.5 13.9477 19.5 14.5V18.5C19.5 19.0523 19.0523 19.5 18.5 19.5H14.5C13.9477 19.5 13.5 19.0523 13.5 18.5Z" />
+        </svg>
+      </div>
+      <h1>Medical AI Assistant</h1>
+      <p class="subtitle">Professional Health Insights & Guidance</p>
     </div>
 
-    <div class="input-row">
-      <input id="msg" placeholder="Describe your symptoms…" />
-      <button onclick="send()">Ask</button>
+    <div class="card">
+      <div class="disclaimer">
+        <svg class="disclaimer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <div class="disclaimer-content">
+          <strong>Medical Disclaimer:</strong> This AI assistant provides general health information for educational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or qualified healthcare provider with questions regarding a medical condition.
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <div class="quick-action-title">Common Health Topics</div>
+        <div class="quick-action-grid">
+          <button class="quick-btn" onclick="quickAsk('What are the symptoms of the common cold?')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            <span>Cold Symptoms</span>
+          </button>
+          <button class="quick-btn" onclick="quickAsk('How can I manage stress and anxiety?')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <span>Stress Management</span>
+          </button>
+          <button class="quick-btn" onclick="quickAsk('What are healthy sleep habits?')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+            <span>Sleep Health</span>
+          </button>
+          <button class="quick-btn" onclick="quickAsk('Tips for maintaining a healthy diet')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <span>Healthy Diet</span>
+          </button>
+          <button class="quick-btn" onclick="quickAsk('Benefits of regular exercise')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <span>Exercise Benefits</span>
+          </button>
+          <button class="quick-btn" onclick="quickAsk('How to prevent seasonal allergies?')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span>Allergy Prevention</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-container" id="chatContainer">
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <p>Start a conversation by describing your symptoms or health concerns</p>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <input 
+          id="msg" 
+          placeholder="Describe your symptoms or ask a health question..." 
+          onkeypress="if(event.key==='Enter') send()"
+        />
+        <button onclick="send()" id="sendBtn">
+          Send
+        </button>
+      </div>
+
+      <div id="loading" class="loading" style="display: none;">
+        <span>Analyzing</span>
+        <div class="loading-dots">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+        </div>
+      </div>
     </div>
 
-    <div id="loading" class="loading">Thinking…</div>
-    <div id="reply" class="response"></div>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h3>Privacy First</h3>
+        <p>Your health conversations are confidential and secure. We prioritize your privacy.</p>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3>24/7 Availability</h3>
+        <p>Get health information and guidance whenever you need it, day or night.</p>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <h3>Evidence-Based</h3>
+        <p>Information based on current medical knowledge and health guidelines.</p>
+      </div>
+    </div>
   </div>
 
   <script>
+    const chatContainer = document.getElementById("chatContainer");
+    const messageInput = document.getElementById("msg");
+    const sendBtn = document.getElementById("sendBtn");
+    const loading = document.getElementById("loading");
+    let conversationStarted = false;
+
+    function quickAsk(question) {
+      messageInput.value = question;
+      send();
+    }
+
     async function send() {
-      const msg = document.getElementById("msg").value.trim();
+      const msg = messageInput.value.trim();
       if (!msg) return;
 
-      const replyBox = document.getElementById("reply");
-      const loading = document.getElementById("loading");
+      if (!conversationStarted) {
+        chatContainer.innerHTML = '';
+        conversationStarted = true;
+      }
 
-      replyBox.textContent = "";
-      loading.style.display = "block";
+      addMessage('user', msg);
+      messageInput.value = "";
+      sendBtn.disabled = true;
+      loading.style.display = "flex";
 
       try {
-        const res = await fetch("/chat", {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg })
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1000,
+            messages: [
+              { 
+                role: "user", 
+                content: `You are a medical AI assistant. Provide helpful, accurate health information while being clear that you're not replacing professional medical advice. Be empathetic and professional. User question: ${msg}` 
+              }
+            ],
+          })
         });
 
         const data = await res.json();
-        replyBox.textContent = data.reply;
+        const reply = data.content.find(c => c.type === 'text')?.text || 'I apologize, but I encountered an error. Please try again.';
+        addMessage('ai', reply);
       } catch (e) {
-        replyBox.textContent = "⚠️ Something went wrong. Please try again.";
+        addMessage('ai', '⚠️ I apologize, but I encountered a technical issue. Please try again in a moment.');
       } finally {
         loading.style.display = "none";
+        sendBtn.disabled = false;
+        messageInput.focus();
       }
     }
+
+    function addMessage(type, content) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message`;
+      
+      const label = document.createElement('div');
+      label.className = 'message-label';
+      label.textContent = type === 'user' ? 'You' : 'Medical AI';
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.textContent = content;
+      
+      messageDiv.appendChild(label);
+      messageDiv.appendChild(contentDiv);
+      chatContainer.appendChild(messageDiv);
+      
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    messageInput.focus();
   </script>
 </body>
 </html>
